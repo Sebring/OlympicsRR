@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script type="text/javascript" src="js/lib/crafty.js"></script>
+    <script type="text/javascript" src="js/games/olympics/game.js"></script>
+    <script type="text/javascript" src="js/games/olympics/components.js"></script>
+    <script type="text/javascript" src="js/games/olympics/scenes.js"></script>
+    <script>
+    	window.addEventListener('load', start);
+      function start() {
+        Crafty.init(Game.width(), Game.height());
+        Crafty.background(Game.colors.background);
+        Crafty.scene('Start');
+      }
+  	</script>
+  </head>
+  <body></body>
+</html>
