@@ -140,6 +140,7 @@ Crafty.scene('Start', function() {
 });
 
 Crafty.scene('Tennis_01', function() {
+  
   Scene.destroy();
   Scene = Olympics.init();
 	Scene.p1 = Olympics.defaultPlayer_east(); 
@@ -147,6 +148,8 @@ Crafty.scene('Tennis_01', function() {
 	Scene.ball = Olympics.createDefaultBall();     
   
   Olympics.createDefaultWalls();
+	
+	Crafty.background('darkgreen');
 
 });
 
