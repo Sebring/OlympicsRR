@@ -115,8 +115,28 @@ Olympics = {
 var Scene = Olympics.init();
 
 Crafty.scene('Start', function() {
-	//Crafty.c('Text, DOM')
-		//.text('Olympics RR');	
+	Crafty.e('Text, DOM, Color')
+		.attr({x:100, y:100, w:300})
+		.textColor('powderblue')
+		.text('Olympics RR')
+		.textFont({family: 'impact', size:'50px', type:'bold'})
+	
+	Crafty.e('Text, DOM, Color')
+		.attr({x:100, y:180, w:500})
+		.textColor('goldenrod')
+		.text('Press [ U ] to start')
+		.textFont({family:'impact', size:'24px'});
+	Crafty.e('Text, DOM, Color')
+		.attr({x:100, y:220, w:500})
+		.textColor('goldenrod')
+		.text('Press [ P ] to pause')
+		.textFont({family:'impact', size:'24px'});
+	Crafty.e('Text, DOM, Color')
+		.attr({x:100, y:260, w:500})
+		.textColor('goldenrod')
+		.text('Press [ U ] to change sport')
+		.textFont({family:'impact', size:'24px'});
+	
 });
 
 Crafty.scene('Tennis_01', function() {
@@ -179,9 +199,14 @@ Crafty.scene('Squash_01', function() {
 			Scene.p2.addPoint();
 		}
 	}
-
+	Scene.ball.color('darkslategray');
+	Crafty.background('silver');
+	
 	Olympics.createDefaultWalls();
 	Crafty.e("Wall")
 		.place(0, 8)
 		.size(4, 50);
+	Crafty("Wall").each(function() {
+		this.color('maroon');
+	});
 });

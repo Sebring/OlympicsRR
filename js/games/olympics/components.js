@@ -79,7 +79,7 @@ Crafty.c("Ball", {
         this.requires("2D, WebGL, Color, Collision, Placeable");
         this.attr({x: 30*Game.dimensions.tile, y: 20*Game.dimensions.tile, 
             w: Game.dimensions.tile, h: Game.dimensions.tile, dX: 5, dY: 0});
-        this.color('salmon');
+        this.color('yellowgreen');
         this.hitPaddle = function hitPaddle(data) {console.log("ball hit Paddle")};
         this.hitWall = function hitWall(data) {console.log("ball hit wall")};
         this.leaveEast = function leaveEast() {console.log("Ball leaves east")};
