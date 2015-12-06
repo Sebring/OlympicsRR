@@ -17,7 +17,7 @@ Game = {
 		console.log('setScene ' + idx);
 		console.log('scenes ' + Game.scenes.length);
 		if (idx >= Game.scenes.length)
-			idx=0;
+			idx=1; // skip start
 		console.log('setScene ' + idx);
 		Game.scene = idx;
 		Crafty.scene(Game.scenes[idx]);
@@ -46,5 +46,6 @@ Game = {
 	    	Game.setScene(Game.scene+1);
 	    }
 		});
+		Crafty.scene('Start');
   },
 }
