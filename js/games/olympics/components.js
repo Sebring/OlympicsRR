@@ -1,4 +1,3 @@
-
 /**@
  * #Placeable
  * @category Grid
@@ -30,6 +29,26 @@ Crafty.c("Sizable", {
     }
 });
 
+Crafty.c('Olympics', {
+  init: function() {
+    this.count = 0;
+    this.winPoints = 15;
+    this.bind('pointsChanged', this.onPointsChanged);
+    this.bind('playerWin', this.onPlayerWin);
+  },
+  onPointsChanged: function(player) {
+    
+    if (player.points >= this.winPoints) {
+      console.log('onPointAdded %o', player.playerId, player.points);
+      Crafty.trigger('playerWin', player);
+    }
+  },
+  onPlayerWin: function(player) {
+    console.log(player.playerId + ' wins!');
+    Crafty.pause();
+  }
+});
+
 Crafty.c('Player', {
     init: function() {
         this.requires('Color');
@@ -49,6 +68,7 @@ Crafty.c('Player', {
     addPoint: function() {
         this.points++;
         this.scoreboard.text(this.points);
+        Crafty.trigger('pointsChanged', this);
     }
 });
 

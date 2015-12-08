@@ -1,9 +1,6 @@
 Olympics = {
 	init: function() {
-		return Crafty.e("Olympics")
-			.attr({'count': 0})
-		  
-
+		return Crafty.e('Olympics');
 	},
 	getPlayerSettings: function(flags) {
 		var s = {speed: 200, h:6, w:2, id:flags.player};
