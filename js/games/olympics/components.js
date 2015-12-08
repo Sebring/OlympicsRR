@@ -54,7 +54,7 @@ Crafty.c('Player', {
 
 Crafty.c('Paddle', {
     init: function() {
-        this.requires('2D, Canvas, Color, Multiway, Solid, Placeable, Sizable');
+        this.requires('2D, DOM, Color, Multiway, Solid, Placeable, Sizable');
         this.points = 0;
         this.vy=0;
     },
@@ -77,13 +77,16 @@ Crafty.c("Wall", {
 
 Crafty.c("Ball", {
     init: function() {
-        this.requires("2D, WebGL, Color, Collision, Placeable");
+        this.requires("2D, WebGL, Color, Collision, Motion, Placeable");
         this.attr({x: 30*Game.dimensions.tile, y: 20*Game.dimensions.tile, 
-            w: Game.dimensions.tile, h: Game.dimensions.tile, dX: 5, dY: 0});
+            w: Game.dimensions.tile, h: Game.dimensions.tile});
         this.color('yellowgreen');
+        this.vy = 50;
+        this.vx = 260;
         this.hitPaddle = function hitPaddle(data) {console.log("ball hit Paddle")};
         this.hitWall = function hitWall(data) {console.log("ball hit wall")};
         this.leaveEast = function leaveEast() {console.log("Ball leaves east")};
         this.leaveWest = function leaveWest() {console.log("Ball leaves west")};
     }
+
 });
