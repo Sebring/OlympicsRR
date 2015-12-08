@@ -5,29 +5,60 @@ Olympics = {
 		  
 
 	},
-	defaultPlayer_east: function() {
-		return Crafty.e("Player")
-      .color('teal')
-      .setPaddle(Crafty.e("Paddle")
-				.place(Game.dimensions.width-6, 20)
-				.size(2, 6)
-				.multiway(200, { UP_ARROW: -90, DOWN_ARROW: 90 })
-      )
-      .setScoreboard(Crafty.e("Score")
-      	.place(Game.dimensions.width-10, 0.5)
-      );
+	getPlayerSettings: function(flags) {
+		var s = {speed: 200, h:6, w:2, id:flags.player};
+		
+		if (flags.player === 1) {
+			s.color = 'teal';
+			s.x = Game.dimensions.width-6;
+			s.y = 20;
+			if (flags.orientation === 'vertical') {
+				s.controls = {UP_ARROW:-90, DOWN_ARROW:90};
+			} else if (flags.orientation === 'horizontal') {
+				s.controls = {RIGHT_ARROW:0, LEFT_ARROW:180};
+			}
+		} else if (flags.player === 2) {
+			s.color = 'olive';
+			s.x = 2;
+			s.y = 20;
+			if (flags.orientation === 'vertical') {
+				s.controls = {W:-90, S:90};
+			} else if (flags.orientation === 'horizontal') {
+				s.controls = {A:180, D:0};
+			}
+		}
+	  
+		if (flags.orientation === 'horizontal') {
+			s.w = 6;
+			s.h = 2;
+			s.y = Game.dimensions.height-16;
+		}
+		return s;
 	},
-	defaultPlayer_west: function() {
-		return Crafty.e('Player')
-	    .color('olive')
-	    .setPaddle(Crafty.e('Paddle')
-				.place(6, 20)
-				.size(2, 6)
-				.multiway(200, { W: -90, S: 90 })
-	    )
-	    .setScoreboard(Crafty.e('Score')
+	getPlayer: function(settings) {
+		var settings = settings ||  {};
+		var player = Crafty.e('Player')
+			.color(settings.color || 'teal');
+		var paddle = Crafty.e('Paddle')
+			.place(settings.x, settings.y)
+			.size(settings.w, settings.h)
+			.multiway(settings.speed, settings.controls);
+		player.setPaddle(paddle);
+		player.playerId = settings.id;
+		this.addScoreBoard(player);
+		return player;
+	},
+	addScoreBoard: function(player) {
+		if (player.playerId === 1) {
+			player.setScoreboard(Crafty.e('Score')
+				.place(Game.dimensions.width-10, 0.5)
+			);
+		}
+		else if (player.playerId === 2) {
+			player.setScoreboard(Crafty.e('Score')
 	    	.place(2, 0.5)
 	    );
+		}
 	},
 	createDefaultWalls: function() {
 		Crafty.e("Wall")
@@ -45,19 +76,19 @@ Olympics = {
             	this.leaveEast();
             }
             if (this.x < 0) {
-            	this.leaveWest();
-                
+            	this.leaveWest();              
             }
-            if (this.y > Game.width() || this.y < 0) {
-                ballLeaveFrameBug(this);
+            if (this.y > Game.height() ) {
+            	this.ballLeaveNorth();
             }
-            this.x += this.dX;
-            this.y += this.dY;
+            if (this.y < 0) {
+              this.ballLeaveSouth();
+            }
+            this.moveBall();
     	})
     	.checkHits('Wall, Paddle')
     	.bind('HitOn', function(hitData) {ballHitOn(hitData, this)});
-
-			function ballLeaveFrameBug(ball) {
+			function ballLeaveFrame(ball) {
 				ball.x = Game.width/2;
 				ball.y = Game.height/2;
      	};
@@ -73,19 +104,23 @@ Olympics = {
         }
         // PADDLE
         if (data.obj.has("Paddle")) {
-            var y = ball._y;
-            console.log(" - PADDLE");
-            var paddle = data.obj;
-            var c = paddle._h/2;
-            var angle = (-1)*( -ball._h/2 + Number(Number(paddle._y) - Number(ball._y)));
-            angle = (angle-c)*0.3;
-           // var diff = this.dY-paddle.dY;
-            console.log("ball speed " + ball.dY);
-            console.log("paddle speed " + paddle.vy);
-            ball.dY += angle;
-            ball.dX *= -1;
+            ball.hitPaddle(data);
         }
      	};
+     	b.hitPaddle = function(data) {
+        var y = this._y;
+        console.log(" - PADDLE");
+        var paddle = data.obj;
+        var c = paddle._h/2;
+        var angle = (-1)*( -this._h/2 + Number(Number(paddle._y) - Number(this._y)));
+        angle = (angle-c)*0.3;
+       // var diff = this.dY-paddle.dY;
+        console.log("ball speed " + this.dY);
+        console.log("paddle speed " + paddle.vy);
+        this.dY += angle;
+        this.dX *= -1;
+     	}
+     	// default paddle collission
      	// default wall collisions logic
      	b.hitWall = function(data) {
  		    if (data.obj.has("Vertical")) {
@@ -95,6 +130,12 @@ Olympics = {
         }
       	return;
      	};
+     	b.ballLeaveNorth = function() {
+     		ballLeaveFrame(this);
+     	}
+     	b.ballLeaveSoutn = function() {
+     		ballLeaveFrame(this);
+     	}
      	// default point to player 1
      	b.leaveWest = function() {
 				console.log("Goal Player 1");
@@ -107,6 +148,10 @@ Olympics = {
 				this.x = Game.width()/2;
 				this.dY = 0;
 				Scene.p2.addPoint();
+			};
+			b.moveBall = function() {
+				this.x += this.dX;
+        this.y += this.dY;
 			};
      	return b;
 	}
@@ -140,25 +185,21 @@ Crafty.scene('Start', function() {
 });
 
 Crafty.scene('Tennis_01', function() {
-  
   Scene.destroy();
   Scene = Olympics.init();
-	Scene.p1 = Olympics.defaultPlayer_east(); 
-  Scene.p2 = Olympics.defaultPlayer_west();
+	Scene.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
+  Scene.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
 	Scene.ball = Olympics.createDefaultBall();     
-  
   Olympics.createDefaultWalls();
-	
 	Crafty.background('darkgreen');
-
 });
 
 Crafty.scene('Squash_01', function() {
 	Scene.destroy();
 	Scene = Olympics.init();
-	Scene.p1 = Olympics.defaultPlayer_east();
+	Scene.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
+  Scene.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
 	Scene.p1.paddle._x -= Game.dimensions.tile;
-	Scene.p2 = Olympics.defaultPlayer_west();
 	Scene.p2.paddle.place(Game.dimensions.width-6, 40);
 	
 	// count bounces to toggle player turn
@@ -212,4 +253,67 @@ Crafty.scene('Squash_01', function() {
 	Crafty("Wall").each(function() {
 		this.color('maroon');
 	});
+});
+
+Crafty.scene('Basket_01', function() {
+	Scene.destroy();
+	Scene = Olympics.init();
+
+	// players
+	Scene.p1 = Olympics.getPlayer(
+		Olympics.getPlayerSettings(
+			{player:1, orientation:'horizontal'}));
+	Scene.p2 = Olympics.getPlayer(
+		Olympics.getPlayerSettings(
+			{player:2, orientation:'horizontal'}));
+	
+	// walls
+	Olympics.createDefaultWalls();
+		Crafty.e("Wall")
+			.place(0, 8)
+			.size(4, 50);
+	Crafty.e("Wall")
+		.place(Game.dimensions.width-8, 8)
+		.size(4, 50);
+	Crafty("Wall").each(function() {
+		this.color('maroon');
+	});
+
+	// ball
+	Scene.ball = Olympics.createDefaultBall();
+	Scene.ball.moveBall = function() {
+		this.dY += 0.3;
+		this.x += this.dX;
+    this.y += this.dY;
+	};
+	Scene.ball.hitPaddle = function(data) {
+    var y = this._y;
+    console.log(" - PADDLE");
+    var paddle = data.obj;
+    var c = paddle._h/2;
+    var angle = (-1)*( -this._h/2 + Number(Number(paddle._y) - Number(this._y)));
+    angle = (angle-c)*0.3;
+    console.log("ball speed " + this.dY);
+    console.log("paddle speed " + paddle.vy);
+    this.dY *= -1;
+    this.dX = angle;
+    this.dY--;
+ 	// need better control of angle, and p2 angle seems bugged
+	}
+
+});
+
+Crafty.scene('Tennis_02', function() {
+	Scene.destroy();
+	Scene = Olympics.init();
+		// players
+	Scene.p1 = Olympics.getPlayer(
+		Olympics.getPlayerSettings(
+			{player:1, orientation:'vertical'}));
+	Scene.p2 = Olympics.getPlayer(
+		Olympics.getPlayerSettings(
+			{player:2, orientation:'vertical'}));
+	Olympics.createDefaultWalls();
+	Scene.ball = Olympics.createDefaultBall();
+	Scene.ball.addComponent('Gravity').gravity('Wall');
 });

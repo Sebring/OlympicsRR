@@ -34,6 +34,7 @@ Crafty.c('Player', {
     init: function() {
         this.requires('Color');
         this.points = 0;
+        this.playerId = 0;
     },
     setPaddle: function(paddle) {
         this.paddle = paddle;
