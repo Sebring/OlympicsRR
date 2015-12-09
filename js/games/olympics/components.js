@@ -32,7 +32,10 @@ Crafty.c("Sizable", {
 Crafty.c('Olympics', {
   init: function() {
     this.count = 0;
+    this.startSpeed = {x:220, y:0};
     this.winPoints = 15;
+    this.maxSpeed = {x:{min:-500,max:500}, y:{min:-100,max:100}};
+    this.speedIncrease = 1.05;
     this.bind('pointsChanged', this.onPointsChanged);
     this.bind('playerWin', this.onPlayerWin);
   },
@@ -101,8 +104,8 @@ Crafty.c("Ball", {
         this.attr({x: 30*Game.dimensions.tile, y: 20*Game.dimensions.tile, 
             w: Game.dimensions.tile, h: Game.dimensions.tile});
         this.color('yellowgreen');
-        this.vy = 50;
-        this.vx = 260;
+        this.vy = 0;
+        this.vx = 200;
         this.hitPaddle = function hitPaddle(data) {console.log("ball hit Paddle")};
         this.hitWall = function hitWall(data) {console.log("ball hit wall")};
         this.leaveEast = function leaveEast() {console.log("Ball leaves east")};

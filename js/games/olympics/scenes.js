@@ -68,20 +68,18 @@ Olympics = {
 	createDefaultBall: function() {
 		var b = Crafty.e("Ball")
      	.bind('EnterFrame', function () {
-
-            if (this.x > Game.width()) {
-            	this.leaveEast();
-            }
-            if (this.x < 0) {
-            	this.leaveWest();              
-            }
-            if (this.y > Game.height() ) {
-            	this.ballLeaveNorth();
-            }
-            if (this.y < 0) {
-              this.ballLeaveSouth();
-            }
-            this.moveBall();
+        if (this.x > Game.width()) {
+        	this.leaveEast();
+        }
+        if (this.x < 0) {
+        	this.leaveWest();              
+        }
+        if (this.y > Game.height() ) {
+        	this.ballLeaveNorth();
+        }
+        if (this.y < 0) {
+          this.ballLeaveSouth();
+        }
     	})
     	.checkHits('Wall, Paddle')
     	.bind('HitOn', function(hitData) {ballHitOn(hitData, this)});
@@ -107,11 +105,16 @@ Olympics = {
         var c = paddle._h/2;
         var angle = (-1)*( -this._h/2 + Number(Number(paddle._y) - Number(this._y)));
         angle = (angle-c);
-       // var diff = this.dY-paddle.dY;
+
         console.log("ball speed x " + this.vx);
         console.log("angle " + angle);
         this.vy += angle*10;
         this.vx *= -1;
+        this.increaseSpeed();
+     	}
+
+     	b.increaseSpeed = function() {
+     		this.vx = Crafty.math.clamp((this.vx*game.speedIncrease), game.maxSpeed.x['min'], game.maxSpeed.x['max']);
      	}
 
      	// default wall collisions logic
@@ -124,28 +127,29 @@ Olympics = {
       	return;
      	};
      	b.ballLeaveNorth = function() {
-     		ballLeaveFrame(this);
+     		this.reset();
      	}
-     	b.ballLeaveSoutn = function() {
-     		ballLeaveFrame(this);
+     	b.ballLeaveSouth = function() {
+     		this.reset();
      	}
      	// default point to player 1
      	b.leaveWest = function() {
 				console.log("Goal Player 1");
-				this.x = Game.width()/2;
-				this.vy = 0;
 				game.p1.addPoint();
+				this.reset()
+				this.vx *= -1;
+				this.x = Game.width()/1.5;
 			};
 			b.leaveEast = function() {
 				console.log("Goal Player 2");
-				this.x = Game.width()/2;
-				this.vy = 0;
 				game.p2.addPoint();
+				this.reset();
 			};
-			b.moveBall = function() {
-				//this.x += this.dX;
-        //this.y += this.dY;
-			};
+			b.reset = function() {
+				this.vx = game.startSpeed['x'];
+				this.vy = game.startSpeed['y'];
+				this.x = Game.width()/3;
+			}
      	return b;
 	}
 };
@@ -190,6 +194,7 @@ Crafty.scene('Tennis_01', function() {
 Crafty.scene('Squash_01', function() {
 	game.destroy();
 	game = Olympics.init();
+	game.maxSpeed = [-650, 650];
 	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
   game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
 	game.p1.paddle._x -= Game.dimensions.tile;
@@ -200,47 +205,47 @@ Crafty.scene('Squash_01', function() {
 
 	game.ball = Olympics.createDefaultBall();
 	game.ball.vx = 300;
-	// override default wall collsions logic
-	Scene.ball.hitWall = function(data) {
-		if (data.obj.has("Vertical")) {
-    	
-    	//this.vx *= -1.1;
-    	
-    	if (this.vx > -600) {
-    		this.vx *= -1.1;
-    	} else {
-    		this.vx = -650;
-    		this.vx *= -1;	
-    	}
-    	
-    	game.count++;
-    	if (game.count%2==1) {
+	
+	// override default ball hits paddle
+	game.ball.hitPaddle = function(data) {
+	  // alter and restrict speed
+  	this.vx = Crafty.math.clamp((this.vx*-1.1), -650, 650);
+  	
+  	game.count++;
+        
+    var paddle = data.obj;
+    var c = paddle._h/2;
+    var angle = (-1)*( -this._h/2 + Number(Number(paddle._y) - Number(this._y)));
+    angle = (angle-c);
+    this.vy += angle*10;
+        
+		Crafty.e('Delay').delay(function() {
+  		if (game.count%2==1) {
     		game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
     		game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
-    	} else {
-    		game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
-    		game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
-    	}
-    } else if (data.obj.has("Horizontal")) {
-    	this.vy *= -1;
-    }
+  		} else {
+  			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
+  			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
+  		}
+  	}, 500);
 	}
+
 	// override default point system
+	game.ball.leaveWest = function() {
+		// this should not happen in squash ;)
+		this.ballLeaveFrame();
+	}
 	game.ball.leaveEast = function() {
 		if (game.count%2==1) {
 			console.log("Goal Player 1");
-			this.x = Game.width()/3;
-			this.vy = 0;
-			this.vx = 250;
+			this.reset();
 			game.count=1;
 			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
 			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
 			game.p1.addPoint();
 		} else {
 			console.log("Goal Player 2");
-			this.x = Game.width()/3;
-			this.vy = 0;
-			this.vx = 250;
+			this.reset();
 			game.count=0;
 			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
 			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
