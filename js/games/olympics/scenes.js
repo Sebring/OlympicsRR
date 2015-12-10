@@ -3,7 +3,7 @@ Olympics = {
 		return Crafty.e('Olympics');
 	},
 	getPlayerSettings: function(flags) {
-		var s = {speed: 200, h:6, w:2, id:flags.player};
+		var s = {speed: 230, h:6, w:2, id:flags.player};
 		
 		if (flags.player === 1) {
 			s.color = 'teal';
@@ -290,15 +290,15 @@ Crafty.scene('Basket_01', function() {
 	Crafty.e("Wall")
 		.place(Game.dimensions.width-4, 8)
 		.size(4, 50);
-	Crafty.e('Wall').place(12, 24).size(7, 2);
-	Crafty.e('Wall').place(Game.dimensions.width-12-7, 24).size(7, 2);
+	Crafty.e('Wall').place(12, 24).size(8, 2);
+	Crafty.e('Wall').place(Game.dimensions.width-12-7, 24).size(8, 2);
 	Crafty("Wall").each(function() {
 		this.color('darkgoldenrod');
 	});
 	
 	// add hoops - check collision for these on wall collissions
-	Crafty.e('Wall').place(13, 24).size(5, 1).color('cornsilk').addComponent('Goal1');
-	Crafty.e('Wall').place(Game.dimensions.width-12-6, 24).size(5, 1).color('cornsilk').addComponent('Goal2');
+	Crafty.e('Wall').place(13, 24).size(6, 1).color('cornsilk').addComponent('Goal1');
+	Crafty.e('Wall').place(Game.dimensions.width-12-6, 24).size(6, 1).color('cornsilk').addComponent('Goal2');
 
 	// ball
 	game.ball = Olympics.createDefaultBall()
