@@ -1,7 +1,7 @@
 # Olympics RR
 A html game inspired by "Video Olympics" for the Atary 2600. The game is built on [Crafty](https://github.com/craftyjs/Crafty) (craftyjs).
 
-## [Play Alpha 0.2.0](https://sebring.github.io)
+## [Play Alpha 0.1.2](https://sebring.github.io)
 Currently game is controlled by `WASD` and Arrow-keys. Press `U` to start a game and also to change game mode. Press `P` to pause/play.
 
 ## Goal
