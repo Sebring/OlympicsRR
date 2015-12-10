@@ -75,19 +75,20 @@ Olympics = {
         	this.leaveWest();              
         }
         if (this.y > Game.height() ) {
-        	this.ballLeaveNorth();
+        	this.leaveNorth();
         }
         if (this.y < 0) {
-          this.ballLeaveSouth();
+          this.leaveSouth();
         }
     	})
     	.checkHits('Wall, Paddle')
     	.bind('HitOn', function(hitData) {ballHitOn(hitData, this)});
-			function ballLeaveFrame(ball) {
-				ball.x = Game.width/2;
-				ball.y = Game.height/2;
-     	};
      	function ballHitOn(hitData, ball) {
+     		if (hitData.length > 1) {
+     			console.log('Is this a corner?');
+     			console.log(hitData);
+     			Crafty.pause();
+     		}
      		var data = hitData[0];
         if (data.obj.has("Wall")) {
         	ball.hitWall(data);
@@ -126,10 +127,10 @@ Olympics = {
         }
       	return;
      	};
-     	b.ballLeaveNorth = function() {
+     	b.leaveNorth = function() {
      		this.reset();
      	}
-     	b.ballLeaveSouth = function() {
+     	b.leaveSouth = function() {
      		this.reset();
      	}
      	// default point to player 1
@@ -146,8 +147,8 @@ Olympics = {
 				this.reset();
 			};
 			b.reset = function() {
-				this.vx = game.startSpeed['x'];
-				this.vy = game.startSpeed['y'];
+				this.vx = game.startSpeed.x;
+				this.vy = game.startSpeed.y;
 				this.x = Game.width()/3;
 			}
      	return b;
@@ -233,7 +234,7 @@ Crafty.scene('Squash_01', function() {
 	// override default point system
 	game.ball.leaveWest = function() {
 		// this should not happen in squash ;)
-		this.ballLeaveFrame();
+		this.reset();
 	}
 	game.ball.leaveEast = function() {
 		if (game.count%2==1) {
