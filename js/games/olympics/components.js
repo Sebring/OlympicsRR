@@ -18,21 +18,22 @@ Crafty.c("Placeable", {
  * 'Vertical' or 'Horizontal' depending on height/width ratio.
  */
 Crafty.c("Sizable", {
-    size: function(w, h) {
-        this.h = h*Game.dimensions.tile;
-        this.w = w*Game.dimensions.tile;
-        if (h>w)
-            this.addComponent('Vertical');
-        else
-            this.addComponent('Horizontal');
-        return this;
-    }
+  size: function(w, h) {
+    this.h = h*Game.dimensions.tile;
+    this.w = w*Game.dimensions.tile;
+    if (h>w)
+      this.addComponent('Vertical');
+    else
+      this.addComponent('Horizontal');
+    return this;
+  }
 });
 
 Crafty.c('Olympics', {
   init: function() {
     this.count = 0;
     this.startSpeed = {x:220, y:0};
+    this.startPlacement = {x:15, y:30};
     this.winPoints = 15;
     this.maxSpeed = {x:{min:-500,max:500}, y:{min:-100,max:100}};
     this.speedIncrease = 1.05;
@@ -77,7 +78,7 @@ Crafty.c('Player', {
 
 Crafty.c('Paddle', {
     init: function() {
-        this.requires('2D, DOM, Color, Multiway, Solid, Placeable, Sizable');
+        this.requires('2D, WebGL, Color, Multiway, Solid, Placeable, Sizable');
         this.points = 0;
         this.vy=0;
     },
@@ -93,16 +94,15 @@ Crafty.c("Score", {
 
 Crafty.c("Wall", {
     init: function() {
-        this.requires("2D, DOM, Color, Solid, Placeable, Sizable");
+        this.requires("2D, WebGL, Color, Solid, Placeable, Sizable");
         this.color('powderblue');
     },
 });
 
 Crafty.c("Ball", {
     init: function() {
-        this.requires("2D, WebGL, Color, Collision, Motion, Placeable");
-        this.attr({x: 30*Game.dimensions.tile, y: 20*Game.dimensions.tile, 
-            w: Game.dimensions.tile, h: Game.dimensions.tile});
+        this.requires("2D, WebGL, Color, Collision, Motion, Placeable, Sizable");
+        this.size(1, 1);
         this.color('yellowgreen');
         this.vy = 0;
         this.vx = 200;
