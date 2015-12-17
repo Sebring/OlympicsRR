@@ -1,14 +1,18 @@
 Olympics = {
-	init: function() {
+	init: function(name) {
+		this.halfX = Game.width()/2;
+		this.halfY = Game.height()/2;
 		return Crafty.e('Olympics');
+		
 	},
 	getPlayerSettings: function(flags) {
-		var s = {speed: 230, h:6, w:2, id:flags.player};
+		var s = {speed: 230, h:6, w:2};
 		
 		if (flags.player === 1) {
 			s.color = 'teal';
 			s.x = Game.dimensions.width-6;
 			s.y = 20;
+			s.pId = 0; // FIXME
 			if (flags.orientation === 'vertical') {
 				s.controls = {UP_ARROW:-90, DOWN_ARROW:90};
 			} else if (flags.orientation === 'horizontal') {
@@ -18,6 +22,7 @@ Olympics = {
 			s.color = 'olive';
 			s.x = 2;
 			s.y = 20;
+			s.pId = 1; // FIXME
 			if (flags.orientation === 'vertical') {
 				s.controls = {W:-90, S:90};
 			} else if (flags.orientation === 'horizontal') {
@@ -36,22 +41,22 @@ Olympics = {
 		var settings = settings ||  {};
 		var player = Crafty.e('Player')
 			.color(settings.color || 'teal');
+		player.playerId = settings.pId;
 		var paddle = Crafty.e('Paddle')
 			.place(settings.x, settings.y)
 			.size(settings.w, settings.h)
 			.multiway(settings.speed, settings.controls);
 		player.setPaddle(paddle);
-		player.playerId = settings.id;
 		this.addScoreBoard(player);
 		return player;
 	},
 	addScoreBoard: function(player) {
-		if (player.playerId === 1) {
+		if (player.playerId === 0) {
 			player.setScoreboard(Crafty.e('Score')
 				.place(Game.dimensions.width-10, 0.5)
 			);
 		}
-		else if (player.playerId === 2) {
+		else if (player.playerId === 1) {
 			player.setScoreboard(Crafty.e('Score')
 	    	.place(2, 0.5)
 	    );
@@ -155,7 +160,14 @@ Olympics = {
 			};
 			b.step = function() {};
      	return b;
-	}
+	},
+	absoluteYAxisChange: function(e) {
+  	this.y = Olympics.halfY + Olympics.halfY * e.value;
+  },
+  absoluteXAxisChange: function(e) {
+  	this.x = Olympics.halfX + Olympics.halfX * (e.value*-1);
+  }
+
 };
 
 var game = Olympics.init();
@@ -182,22 +194,24 @@ Crafty.scene('Start', function() {
 		.textColor('goldenrod')
 		.text('Press [ U ] to change sport')
 		.textFont({family:'impact', size:'24px'});
-	
 });
 
 Crafty.scene('Tennis_01', function() {
   game.destroy();
-  game = Olympics.init();
+  game = Olympics.init()
+  	.setTitle('Tennis 01')
+  	.setBackground('darkgreen');
 	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
   game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
-	game.ball = Olympics.createDefaultBall();     
+	game.ball = Olympics.createDefaultBall();
   Olympics.createDefaultWalls();
-	Crafty.background('darkgreen');
 });
 
 Crafty.scene('Squash_01', function() {
 	game.destroy();
-	game = Olympics.init();
+	game = Olympics.init()
+		.setTitle('Squash 01')
+		.setBackground('silver');
 	game.maxSpeed = [-650, 650];
 	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
   game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
@@ -207,7 +221,8 @@ Crafty.scene('Squash_01', function() {
 	// count bounces to toggle player turn
 	game.count = 0;
 
-	game.ball = Olympics.createDefaultBall();
+	game.ball = Olympics.createDefaultBall()
+		.color('darkslategray');
 	game.ball.vx = 300;
 	
 	// override default ball hits paddle
@@ -256,8 +271,7 @@ Crafty.scene('Squash_01', function() {
 			game.p2.addPoint();
 		}
 	}
-	game.ball.color('darkslategray');
-	Crafty.background('silver');
+	
 	
 	Olympics.createDefaultWalls();
 	Crafty.e("Wall")
@@ -270,8 +284,11 @@ Crafty.scene('Squash_01', function() {
 
 Crafty.scene('Basket_01', function() {
 	game.destroy();
-	game = Olympics.init();
-	game.maxSpeed = {x:{min:-350,max:350}, y:{min:-550,max:550}};
+	game = Olympics.init()
+		.setTitle('Basket 01')
+		.setBackground('darkslategray');
+	Crafty('Title').get(0).textColor('darkslategray');
+	game.maxSpeed = {x:{min:-350,max:350}, y:{min:-580,max:580}};
 	// players
 	game.p1 = Olympics.getPlayer(
 		Olympics.getPlayerSettings(
@@ -279,8 +296,6 @@ Crafty.scene('Basket_01', function() {
 	game.p2 = Olympics.getPlayer(
 		Olympics.getPlayerSettings(
 			{player:2, orientation:'horizontal'}));
-	
-	Crafty.background('darkslategray');
 
 	// walls
 	Olympics.createDefaultWalls();

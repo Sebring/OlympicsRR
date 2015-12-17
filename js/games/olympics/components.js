@@ -86,6 +86,16 @@ Crafty.c('Player', {
     setPaddle: function(paddle) {
         this.paddle = paddle;
         this.paddle.color(this.color());
+        this.paddle.gamepadMultiway({
+          analog: true,
+          speed: 1000,
+          gamepadIndex: this.playerId});
+        this.paddle.unbind('GamepadAxisChange');
+        if (this.paddle.has('Vertical')) {
+          this.paddle.bind('GamepadAxisChange', Olympics.absoluteYAxisChange);
+        } else if (this.paddle.has('Horizontal')) {
+          this.paddle.bind('GamepadAxisChange', Olympics.absoluteXAxisChange);
+        }
         return this;
     },
     setScoreboard: function(scoreboard) {
@@ -102,7 +112,7 @@ Crafty.c('Player', {
 
 Crafty.c('Paddle', {
     init: function() {
-        this.requires('2D, WebGL, Color, Multiway, Solid, Placeable, Sizable');
+        this.requires('2D, WebGL, Color, Multiway, GamepadMultiway, Solid, Placeable, Sizable');
         this.points = 0;
         this.vy=0;
     },
