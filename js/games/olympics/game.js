@@ -2,7 +2,7 @@ Game = {
 	scene: 0,
 	description: {
 		name:"Olympics",
-		version:"0.1.2",
+		version:"0.2.0",
 	},
 	scenes: ['Start', 'Tennis_01', 'Squash_01', 'Basket_01'],
 	dimensions: {
