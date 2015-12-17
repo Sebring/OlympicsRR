@@ -29,6 +29,17 @@ Crafty.c("Sizable", {
   }
 });
 
+Crafty.c('Title', {
+  init: function() {
+    this.requires('Text, DOM, Placeable');
+    this.attr({w:500});
+    this.textColor('goldenrod');
+    this.place(15, Game.dimensions.height-6);
+    this.text('Olympics RR');
+    this.textFont({family:'impact', size:'32px'});
+  }
+});
+
 Crafty.c('Olympics', {
   init: function() {
     this.count = 0;
@@ -50,6 +61,19 @@ Crafty.c('Olympics', {
   onPlayerWin: function(player) {
     console.log(player.playerId + ' wins!');
     Crafty.pause();
+  },
+  setTitle: function(title) {
+    if (Crafty('Title').length == 1) {
+      Crafty('Title').get(0).text(title);
+    } else {
+      Crafty.e('Title')
+        .text(title);
+    }
+    return this;
+  },
+  setBackground: function(color) {
+    Crafty.background(color);
+    return this;
   }
 });
 
