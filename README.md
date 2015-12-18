@@ -1,10 +1,11 @@
 # Olympics RR
 A html game inspired by "Video Olympics" for the Atari 2600. The game is built on [Crafty](https://github.com/craftyjs/Crafty) (craftyjs).
 
-## Version 0.2.0
- * Gampad support!
+## Version
+ * 0.3.0 :: "Fullscreen support" causing refactoring game logic - speed, positioning etc. 
+ * 0.2.0 :: Gampad support!
 
-## [Play Alpha 0.2.0](https://sebring.github.io)
+## [Play](https://sebring.github.io)
 Currently game is controlled by `WASD` and Arrow-keys. Press `U` to start a game and also to change game mode. Press `P` to pause/play. Gamepads can also be used, expected input is axis[1].
 
 ## Paddles

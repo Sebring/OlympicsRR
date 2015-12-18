@@ -43,11 +43,11 @@ Crafty.c('Title', {
 Crafty.c('Olympics', {
   init: function() {
     this.count = 0;
-    this.startSpeed = {x:220, y:0};
-    this.startPlacement = {x:15, y:30};
+    this.startSpeed = {x:30*Game.dimensions.tile, y:0};
+    this.startPlacement = {x:15, y:35};
     this.winPoints = 15;
-    this.maxSpeed = {x:{min:-500,max:500}, y:{min:-100,max:100}};
-    this.speedIncrease = 1.05;
+    this.maxSpeed = {x:{min:-60*Game.dimensions.tile, max:60*Game.dimensions.tile}, y:{min:-15*Game.dimensions.tile, max:15*Game.dimensions.tile}};
+    this.speedIncrease = 1.08;
     this.bind('pointsChanged', this.onPointsChanged);
     this.bind('playerWin', this.onPlayerWin);
   },
@@ -145,5 +145,4 @@ Crafty.c("Ball", {
         this.leaveEast = function leaveEast() {console.log("Ball leaves east")};
         this.leaveWest = function leaveWest() {console.log("Ball leaves west")};
     }
-
 });

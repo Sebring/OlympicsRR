@@ -6,13 +6,12 @@ Olympics = {
 		
 	},
 	getPlayerSettings: function(flags) {
-		var s = {speed: 230, h:6, w:2};
+		var s = {speed: 40*Game.dimensions.tile, h:6, w:2, pId:flags.player-1};
 		
 		if (flags.player === 1) {
 			s.color = 'teal';
 			s.x = Game.dimensions.width-6;
 			s.y = 20;
-			s.pId = 0; // FIXME
 			if (flags.orientation === 'vertical') {
 				s.controls = {UP_ARROW:-90, DOWN_ARROW:90};
 			} else if (flags.orientation === 'horizontal') {
@@ -22,7 +21,6 @@ Olympics = {
 			s.color = 'olive';
 			s.x = 2;
 			s.y = 20;
-			s.pId = 1; // FIXME
 			if (flags.orientation === 'vertical') {
 				s.controls = {W:-90, S:90};
 			} else if (flags.orientation === 'horizontal') {
@@ -31,9 +29,9 @@ Olympics = {
 		}
 	  
 		if (flags.orientation === 'horizontal') {
-			s.w = 8;
-			s.h = 1;
-			s.y = Game.dimensions.height-16;
+			s.w = Game.dimensions.tile*1.2;
+			s.h = 1.5;
+			s.y = Game.dimensions.height-Game.dimensions.tile*2.5;
 		}
 		return s;
 	},
@@ -203,7 +201,8 @@ Crafty.scene('Tennis_01', function() {
   	.setBackground('darkgreen');
 	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
   game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
-	game.ball = Olympics.createDefaultBall();
+	game.ball = Olympics.createDefaultBall()
+		.size(2, 2);
   Olympics.createDefaultWalls();
 });
 
@@ -212,12 +211,17 @@ Crafty.scene('Squash_01', function() {
 	game = Olympics.init()
 		.setTitle('Squash 01')
 		.setBackground('silver');
-	game.maxSpeed = [-650, 650];
 	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
   game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
-	game.p1.paddle._x -= Game.dimensions.tile;
+	
+	var tile = Game.dimensions.tile;
+
+	game.p1.paddle._x -= tile;
 	game.p2.paddle.place(Game.dimensions.width-6, 40);
 	
+
+	game.speedIncrease = 1.15;	
+	game.maxSpeed = {x:{min:-100*tile,max:100*tile}, y:{min:-70*tile,max:70*tile}};
 	// count bounces to toggle player turn
 	game.count = 0;
 
@@ -226,18 +230,19 @@ Crafty.scene('Squash_01', function() {
 	game.ball.vx = 300;
 	
 	// override default ball hits paddle
-	game.ball.hitPaddle = function(data) {
-	  // alter and restrict speed
-  	this.vx = Crafty.math.clamp((this.vx*-1.1), -650, 650);
-  	
+	game.ball.hitPaddle = function squashPaddle(data) {
+  	// bounce and increase speed
+  	this.vx *= -1;
+  	this.increaseSpeed();
+  	// this keep track of player turn
   	game.count++;
-        
+    // set ball at angle
     var paddle = data.obj;
     var c = paddle._h/2;
     var angle = (-1)*( -this._h/2 + Number(Number(paddle._y) - Number(this._y)));
     angle = (angle-c);
     this.vy += angle*10;
-        
+    // swap player position delay
 		Crafty.e('Delay').delay(function() {
   		if (game.count%2==1) {
     		game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
@@ -276,7 +281,7 @@ Crafty.scene('Squash_01', function() {
 	Olympics.createDefaultWalls();
 	Crafty.e("Wall")
 		.place(0, 8)
-		.size(4, 50);
+		.size(8, Game.dimensions.height-8);
 	Crafty("Wall").each(function() {
 		this.color('maroon');
 	});
@@ -287,8 +292,10 @@ Crafty.scene('Basket_01', function() {
 	game = Olympics.init()
 		.setTitle('Basket 01')
 		.setBackground('darkslategray');
+	var tile = Game.dimensions.tile;
 	Crafty('Title').get(0).textColor('darkslategray');
-	game.maxSpeed = {x:{min:-350,max:350}, y:{min:-580,max:580}};
+	game.maxSpeed = {x:{min:-65*tile,max:65*tile}, y:{min:-95*tile,max:95*tile}};
+	game.startPlacement = {x:10, y:50};
 	// players
 	game.p1 = Olympics.getPlayer(
 		Olympics.getPlayerSettings(
@@ -301,35 +308,34 @@ Crafty.scene('Basket_01', function() {
 	Olympics.createDefaultWalls();
 	Crafty.e("Wall")
 		.place(0, 8)
-		.size(4, 50);
+		.size(4, Game.dimensions.height-8);
 	Crafty.e("Wall")
 		.place(Game.dimensions.width-4, 8)
-		.size(4, 50);
-	Crafty.e('Wall').place(12, 24).size(8, 2);
-	Crafty.e('Wall').place(Game.dimensions.width-12-7, 24).size(8, 2);
-	Crafty("Wall").each(function() {
+		.size(4, Game.dimensions.height-8);
+	// solid hoops
+	Crafty.e('Wall').place(tile*2, tile*4).size(tile*1.5, 3);
+	Crafty.e('Wall').place(Game.dimensions.width-tile*2-tile*1.5, tile*4).size(tile*1.5, 3);
+	Crafty("Wall, Score").each(function() {
 		this.color('darkgoldenrod');
 	});
 	
-	// add hoops - check collision for these on wall collissions
-	Crafty.e('Wall').place(13, 24).size(6, 1).color('cornsilk').addComponent('Goal1');
-	Crafty.e('Wall').place(Game.dimensions.width-12-6, 24).size(6, 1).color('cornsilk').addComponent('Goal2');
+	// add net hoops - check collision for these on wall collissions
+	Crafty.e('Wall').place(tile*2+tile/4, tile*4).size(tile, 1).color('cornsilk').addComponent('Hoop1');
+	Crafty.e('Wall').place(Game.dimensions.width-(tile*3+tile/4), tile*4).size(tile, 1).color('cornsilk').addComponent('Hoop2');
 
 	// ball
 	game.ball = Olympics.createDefaultBall()
-		.place(15, 40)
 		.color('chocolate')
-		.size(2, 2);
-	game.ball.vx = 100;
-	game.ball.vy = 200;
-	
+		.size(3, 3);
+	game.startSpeed = {x:150, y:0};
+	game.ball.reset();
 	
 	// each frame
 	var p1min = Game.dimensions.width/2 * Game.dimensions.tile;
 	var p2max = (Game.dimensions.width/2 * Game.dimensions.tile) - game.p2.paddle._w;
 	game.ball.step = function() {
 		// simulate gravity
-		this.vy += 18;
+		this.vy += tile*2;
 		// clamp paddle positions
 		game.p1.paddle._x = Crafty.math.clamp(game.p1.paddle._x, p1min, 1023);
 		game.p2.paddle._x = Crafty.math.clamp(game.p2.paddle._x, -100, p2max);
@@ -345,23 +351,37 @@ Crafty.scene('Basket_01', function() {
  
     this.vy *= -1;
     this.vx = this.vx*0.5 + angle*10;
-    this.vy -= 8;
+    this.vy -= tile;
 		this.vx = Crafty.math.clamp(this.vx, game.maxSpeed.x['min'], game.maxSpeed.x['max']);
 		this.vy = Crafty.math.clamp((this.vy*game.speedIncrease), game.maxSpeed.y['min'], game.maxSpeed.y['max']);
 
     console.log('speed y: ' + this.vy);
     console.log('speed x: ' + this.vx)
- 		// need better control of angle, and p2 angle seems bugged
 	};
+
+	game.ball.leaveWest = function() {
+		this.reset();
+	}
+	game.ball.leaveEast = function() {
+		this.reset();
+	}
 
 	// overriden to check for goals
 	game.ball.hitWall  = function(data) {
- 		if (this.hit('Goal1')) {
- 			this.leaveWest();
+ 		if (this.hit('Hoop1')) {
+ 			console.log("Goal Player 1");
+			game.p1.addPoint();
+			game.startSpeed = {x:-150, y:0};
+			game.startPlacement = {x:Game.dimensions.width-tile*2 , y:50};
+			this.reset();
  			return;
  		}
- 		if (this.hit('Goal2')) {
- 			this.leaveEast();
+ 		if (this.hit('Hoop2')) {
+ 			console.log("Goal Player 2");
+			game.p2.addPoint();
+			game.startSpeed = {x:150, y:0};
+			game.startPlacement = {x:tile, y:50};
+			this.reset();
  			return;
  		}
  		if (data.obj.has("Vertical")) {

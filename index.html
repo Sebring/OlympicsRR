@@ -8,11 +8,19 @@
     <script>
     	window.addEventListener('load', start);
       function start() {
-        Crafty.init(Game.width(), Game.height());
-        Crafty.background(Game.colors.background);
         Game.start();
       }
   	</script>
+    <style>
+      body {
+        align-content:center;
+        background-color: #100;
+        padding-top: 40px;
+      }
+      #cr-stage {
+        margin:auto;
+      }
+    </style>
   </head>
   <body></body>
 </html>

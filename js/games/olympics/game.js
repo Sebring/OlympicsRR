@@ -8,7 +8,7 @@ Game = {
 	dimensions: {
 		tile: 8,
 		width: 80,
-		height: 60,
+		height: 45,
 	},
 	colors: {
 		background:'darkgreen'
@@ -25,20 +25,28 @@ Game = {
 	reloadScene: function() {
 		Crafty.scene(Game.scene);
 	},
-	width: function() {
-		return this.dimensions.width * this.dimensions.tile;
+	width: function(w) {
+		this.dimensions.width = w? w/this.dimensions.tile : this.dimensions.width;
+		return this.dimensions.width*this.dimensions.tile;
 	},
-	height: function() {
-		return this.dimensions.height * this.dimensions.tile;
+	height: function(h) {
+		this.dimensions.height = h? h/this.dimensions.tile : this.dimensions.height;
+		return this.dimensions.height*this.dimensions.tile;
 	},
-	tile: function() {
+	tile: function(tile) {
+		this.dimensions.tile = tile || this.dimensions.tile;
 		return this.dimensions.tile;
 	},
 	start: function() {
-		Crafty.init(Game.width(), Game.height());
+		var h = Crafty.math.clamp(window.innerHeight-80, 480, 1200);
+		h -= h%80;
+		var w = Math.round(h*1.25);
+		this.tile(Math.round(h/80));
+		this.width(w);
+		this.height(h);
+		Crafty.init(w, h);
 		Crafty.background(Game.colors.background);
 		Crafty.bind('KeyUp', function(e) {
-	    console.log("KeyUp");
 	    if (e.key == Crafty.keys.P) {
 	    	Crafty.pause();
 	    } else if (e.key == Crafty.keys.U) {
