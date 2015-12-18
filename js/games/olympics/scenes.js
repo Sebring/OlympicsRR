@@ -321,8 +321,8 @@ Crafty.scene('Basket_01', function() {
 	});
 	
 	// add net hoops - check collision for these on wall collissions
-	Crafty.e('Wall').place(tile*2+tile/4, tile*4).size(tile, 1).color('cornsilk').addComponent('Hoop1');
-	Crafty.e('Wall').place(Game.dimensions.width-(tile*3+tile/4), tile*4).size(tile, 1).color('cornsilk').addComponent('Hoop2');
+	Crafty.e('Wall').place(tile*2+tile/4, tile*4).size(tile, 1).color('cornsilk').addComponent('Goal1');
+	Crafty.e('Wall').place(Game.dimensions.width-(tile*3+tile/4), tile*4).size(tile, 1).color('cornsilk').addComponent('Goal2');
 
 	// ball
 	game.ball = Olympics.createDefaultBall()
@@ -369,7 +369,7 @@ Crafty.scene('Basket_01', function() {
 
 	// overriden to check for goals
 	game.ball.hitWall  = function(data) {
- 		if (this.hit('Hoop1')) {
+ 		if (this.hit('Goal1')) {
  			console.log("Goal Player 1");
 			game.p1.addPoint();
 			game.startSpeed = {x:-150, y:0};
@@ -377,11 +377,82 @@ Crafty.scene('Basket_01', function() {
 			this.reset();
  			return;
  		}
- 		if (this.hit('Hoop2')) {
+ 		if (this.hit('Goal2')) {
  			console.log("Goal Player 2");
 			game.p2.addPoint();
 			game.startSpeed = {x:150, y:0};
 			game.startPlacement = {x:tile, y:50};
+			this.reset();
+ 			return;
+ 		}
+ 		if (data.obj.has("Vertical")) {
+      this.vx *= -1;
+    } else if (data.obj.has("Horizontal")) {
+      this.vy *= -1;
+    }
+  	return;
+	}
+});
+
+Crafty.scene('Hockey_01', function() {
+  game.destroy();
+  game = Olympics.init()
+  	.setTitle('Hockey 01')
+  	.setBackground('powderblue');
+	var tile = Game.dimensions.tile;
+
+  // players
+	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
+  game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
+	// position players
+	game.p2.paddle.place(27, 20);
+	game.p1.paddle.place(Game.dimensions.width-28, 29);
+
+	// ball
+	game.ball = Olympics.createDefaultBall()
+		.size(1.5, 1.5)
+		.color('#100');
+
+  // walls
+	Olympics.createDefaultWalls();
+	Crafty.e("Wall")
+		.place(0, 8)
+		.size(4, Game.dimensions.height-8);
+	Crafty.e("Wall")
+		.place(Game.dimensions.width-4, 8)
+		.size(4, Game.dimensions.height-8);
+	// goals
+	Crafty.e("Wall").place(15, 32).size(2, 20)
+	Crafty.e("Wall").place(17, 32).size(5, 2);
+	Crafty.e("Wall").place(17, 50).size(5, 2);
+	Crafty.e("Wall").place(Game.dimensions.width-17, 32).size(2, 20);
+	Crafty.e("Wall").place(Game.dimensions.width-22, 32).size(5, 2);
+	Crafty.e("Wall").place(Game.dimensions.width-22, 50).size(5, 2);
+	Crafty("Wall").each(function() {
+		this.color("brown");
+	});
+	Crafty.e("Wall").place(17, 34).size(2, 16).color('cornsilk').addComponent('Goal1');
+	Crafty.e("Wall").place(Game.dimensions.width-19, 34).size(2, 16).color('cornsilk').addComponent('Goal2');
+	
+	game.startPlacement = {x:Game.dimensions.width/2 , y:20};
+	game.ball.leaveWest = function() {this.reset();}
+	game.ball.leaveEast = function() {this.reset();}
+	game.ball.leaveNorth = function() {this.reset();}
+	game.ball.leaveSouth = function() {this.reset();}
+	// overriden to check for goals
+	game.ball.hitWall  = function(data) {
+ 		if (this.hit('Goal1')) {
+ 			console.log("Goal Player 1");
+			game.p1.addPoint();
+			game.startSpeed = {x:-tile*30, y:20};
+			
+			this.reset();
+ 			return;
+ 		}
+ 		if (this.hit('Goal2')) {
+ 			console.log("Goal Player 2");
+			game.p2.addPoint();
+			game.startSpeed = {x:tile*30, y:20};
 			this.reset();
  			return;
  		}
