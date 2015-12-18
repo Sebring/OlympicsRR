@@ -216,8 +216,9 @@ Crafty.scene('Squash_01', function() {
 	
 	var tile = Game.dimensions.tile;
 
-	game.p1.paddle._x -= tile;
 	game.p2.paddle.place(Game.dimensions.width-6, 40);
+	game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile*2);
+	game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile);
 	
 
 	game.speedIncrease = 1.15;	
@@ -245,11 +246,11 @@ Crafty.scene('Squash_01', function() {
     // swap player position delay
 		Crafty.e('Delay').delay(function() {
   		if (game.count%2==1) {
-    		game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
-    		game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
+				game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile);
+				game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile*2);
   		} else {
-  			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
-  			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
+  			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile*2);
+  			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile);
   		}
   	}, 500);
 	}
@@ -264,15 +265,15 @@ Crafty.scene('Squash_01', function() {
 			console.log("Goal Player 1");
 			this.reset();
 			game.count=1;
-			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
-			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
+			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile);
+			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile*2);
 			game.p1.addPoint();
 		} else {
 			console.log("Goal Player 2");
 			this.reset();
 			game.count=0;
-			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-8);
-			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-5);
+			game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile*2);
+			game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile);
 			game.p2.addPoint();
 		}
 	}
@@ -281,7 +282,7 @@ Crafty.scene('Squash_01', function() {
 	Olympics.createDefaultWalls();
 	Crafty.e("Wall")
 		.place(0, 8)
-		.size(8, Game.dimensions.height-8);
+		.size(tile, Game.dimensions.height-8);
 	Crafty("Wall").each(function() {
 		this.color('maroon');
 	});
