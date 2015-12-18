@@ -10,7 +10,7 @@ Olympics = {
 		
 		if (flags.player === 1) {
 			s.color = 'teal';
-			s.x = Game.dimensions.width-6;
+			s.x = Game.dimensions.width-Game.dimensions.tile*0.8;
 			s.y = 20;
 			if (flags.orientation === 'vertical') {
 				s.controls = {UP_ARROW:-90, DOWN_ARROW:90};
@@ -19,7 +19,7 @@ Olympics = {
 			}
 		} else if (flags.player === 2) {
 			s.color = 'olive';
-			s.x = 2;
+			s.x = Game.dimensions.tile/2;
 			s.y = 20;
 			if (flags.orientation === 'vertical') {
 				s.controls = {W:-90, S:90};
