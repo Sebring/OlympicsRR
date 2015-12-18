@@ -202,7 +202,7 @@ Crafty.scene('Tennis_01', function() {
 	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
   game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
 	game.ball = Olympics.createDefaultBall()
-		.size(2, 2);
+		.size(1.5, 1.5);
   Olympics.createDefaultWalls();
 });
 
