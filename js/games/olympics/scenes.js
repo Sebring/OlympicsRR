@@ -29,9 +29,9 @@ Olympics = {
 		}
 	  
 		if (flags.orientation === 'horizontal') {
-			s.w = Game.dimensions.tile*1.2;
+			s.w = Game.dimensions.tile*1;
 			s.h = 1.5;
-			s.y = Game.dimensions.height-Game.dimensions.tile*2.5;
+			s.y = Game.dimensions.height-Game.dimensions.tile*1.8;
 		}
 		return s;
 	},
@@ -289,6 +289,8 @@ Crafty.scene('Squash_01', function() {
 });
 
 Crafty.scene('Basket_01', function() {
+	game.p1.destroy();
+	game.p1.paddle.destroy();
 	game.destroy();
 	game = Olympics.init()
 		.setTitle('Basket 01')
@@ -314,20 +316,24 @@ Crafty.scene('Basket_01', function() {
 		.place(Game.dimensions.width-4, 8)
 		.size(4, Game.dimensions.height-8);
 	// solid hoops
-	Crafty.e('Wall').place(tile*2, tile*4).size(tile*1.5, 3);
-	Crafty.e('Wall').place(Game.dimensions.width-tile*2-tile*1.5, tile*4).size(tile*1.5, 3);
+	var hoop_y = tile*2.5;
+	var hoop_x = tile*1.5;
+
+	var hoop_w = tile*1.2;
+	Crafty.e('Wall').place(hoop_x, hoop_y).size(hoop_w, 3);
+	Crafty.e('Wall').place(Game.dimensions.width-hoop_x-hoop_w, hoop_y).size(hoop_w, 3);
 	Crafty("Wall, Score").each(function() {
 		this.color('darkgoldenrod');
 	});
 	
 	// add net hoops - check collision for these on wall collissions
-	Crafty.e('Wall').place(tile*2+tile/4, tile*4).size(tile, 1).color('cornsilk').addComponent('Goal1');
-	Crafty.e('Wall').place(Game.dimensions.width-(tile*3+tile/4), tile*4).size(tile, 1).color('cornsilk').addComponent('Goal2');
+	Crafty.e('Wall').place(hoop_x+tile/4, hoop_y).size(tile*0.7, 1).color('cornsilk').addComponent('Goal1');
+	Crafty.e('Wall').place(Game.dimensions.width-hoop_x-tile/4-tile*0.7, hoop_y).size(tile*0.7, 1).color('cornsilk').addComponent('Goal2');
 
 	// ball
 	game.ball = Olympics.createDefaultBall()
 		.color('chocolate')
-		.size(3, 3);
+		.size(2.5, 2.5);
 	game.startSpeed = {x:150, y:0};
 	game.ball.reset();
 	

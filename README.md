@@ -2,6 +2,7 @@
 A html game inspired by "Video Olympics" for the Atari 2600. The game is built on [Crafty](https://github.com/craftyjs/Crafty) (craftyjs).
 
 ## Version
+ * 0.3.2 :: Basket fix
  * 0.3.1 :: New sport - Hockey
  * 0.3.0 :: "Fullscreen support" causing refactoring game logic - speed, positioning etc. 
  * 0.2.0 :: Gampad support!
