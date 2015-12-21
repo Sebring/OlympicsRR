@@ -23,6 +23,7 @@ Crafty.scene('Start', function() {
 		.textFont({family:'impact', size:'24px'});
 });
 
+/** TENNIS **/
 Crafty.scene('Tennis_01', function() {
   game.destroy();
   game = Olympics.init()
@@ -35,6 +36,7 @@ Crafty.scene('Tennis_01', function() {
   Olympics.createDefaultWalls();
 });
 
+/** SQUASH **/
 Crafty.scene('Squash_01', function() {
 	game.destroy();
 	game = Olympics.init()
@@ -114,6 +116,7 @@ Crafty.scene('Squash_01', function() {
 	});
 });
 
+/** BASKET **/
 Crafty.scene('Basket_01', function() {
 	game.destroy();
 	game = Olympics.init()
@@ -224,6 +227,7 @@ Crafty.scene('Basket_01', function() {
 	}
 });
 
+/** HOCKEY **/
 Crafty.scene('Hockey_01', function() {
   game.destroy();
   game = Olympics.init()
@@ -293,19 +297,4 @@ Crafty.scene('Hockey_01', function() {
     }
   	return;
 	}
-});
-
-Crafty.scene('Tennis_02', function() {
-	game.destroy();
-	game = Olympics.init();
-	// players
-	game.p1 = Olympics.getPlayer(
-		Olympics.getPlayerSettings(
-			{player:1, orientation:'vertical'}));
-	game.p2 = Olympics.getPlayer(
-		Olympics.getPlayerSettings(
-			{player:2, orientation:'vertical'}));
-	Olympics.createDefaultWalls();
-	game.ball = Olympics.createDefaultBall();
-	game.ball.addComponent('Gravity').gravity('Wall');
 });
