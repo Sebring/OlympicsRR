@@ -167,5 +167,3 @@ Olympics = {
   }
 
 };
-
-var game = Olympics.init();

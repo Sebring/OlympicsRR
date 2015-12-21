@@ -1,4 +1,5 @@
 Crafty.scene('Start', function() {
+	game = Olympics.init();
 	Crafty.e('Text, DOM, Color')
 		.attr({x:100, y:100, w:300})
 		.textColor('powderblue')
@@ -35,7 +36,7 @@ Crafty.scene('Tennis_01', function() {
 });
 
 Crafty.scene('Squash_01', function() {
-	Crafty('*').destroy();
+	game.destroy();
 	game = Olympics.init()
 		.setTitle('Squash 01')
 		.setBackground('silver');
@@ -45,9 +46,6 @@ Crafty.scene('Squash_01', function() {
 	var tile = Game.dimensions.tile;
 
 	game.p2.paddle.place(Game.dimensions.width-6, 40);
-	game.p1.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile*2);
-	game.p2.paddle._x = Game.dimensions.tile*(Game.dimensions.width-tile);
-	
 
 	game.speedIncrease = 1.15;	
 	game.maxSpeed = {x:{min:-100*tile,max:100*tile}, y:{min:-70*tile,max:70*tile}};
@@ -117,7 +115,7 @@ Crafty.scene('Squash_01', function() {
 });
 
 Crafty.scene('Basket_01', function() {
-	Crafty('*').destroy();
+	game.destroy();
 	game = Olympics.init()
 		.setTitle('Basket 01')
 		.setBackground('darkslategray');
