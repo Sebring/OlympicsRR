@@ -2,9 +2,9 @@ Game = {
 	scene: 0,
 	description: {
 		name:"Olympics",
-		version:"0.3.2",
+		version:"0.3.3",
 	},
-	scenes: ['Start', 'Tennis_01', 'Squash_01', 'Basket_01', 'Hockey_01'],
+	scenes: ['Start', 'Tennis_01', 'Tennis_02', 'Tennis_03', 'Squash_01', 'Basket_01', 'Hockey_01'],
 	dimensions: {
 		tile: 8,
 		width: 80,

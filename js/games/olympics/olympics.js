@@ -5,6 +5,13 @@ Olympics = {
 		return Crafty.e('Olympics');
 		
 	},
+	setupTennis: function() {
+		game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
+  	game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
+		game.ball = Olympics.createDefaultBall()
+		.size(1.5, 1.5);
+  	Olympics.createDefaultWalls();
+	},
 	getPlayerSettings: function(flags) {
 		var s = {speed: 40*Game.dimensions.tile, h:6, w:2, pId:flags.player-1};
 		

@@ -26,14 +26,33 @@ Crafty.scene('Start', function() {
 /** TENNIS **/
 Crafty.scene('Tennis_01', function() {
   game.destroy();
-  game = Olympics.init()
-  	.setTitle('Tennis 01')
-  	.setBackground('darkgreen');
-	game.p1 = Olympics.getPlayer(Olympics.getPlayerSettings({player:1, orientation:'vertical'})); 
-  game.p2 = Olympics.getPlayer(Olympics.getPlayerSettings({player:2, orientation:'vertical'}));
-	game.ball = Olympics.createDefaultBall()
-		.size(1.5, 1.5);
-  Olympics.createDefaultWalls();
+  game = Olympics.init().setTitle('Tennis 01').setBackground('darkgreen');
+	Olympics.setupTennis();
+});
+
+Crafty.scene('Tennis_02', function() {
+	game.destroy();
+	game = Olympics.init().setTitle('Tennis - unfair advantage').setBackground('darkgreen');
+	Olympics.setupTennis();
+
+  game.p1.paddle.size(2, 4);
+  Crafty.e('Wall')
+  	.place(0, 12).size(3, 10);
+  Crafty.e('Wall')
+  	.place(0, Game.dimensions.height-18).size(3, 10);
+});
+
+Crafty.scene('Tennis_03', function() {
+	game.destroy();
+	game = Olympics.init().setTitle('Tennis - extreme advantage').setBackground('darkgreen');
+	Olympics.setupTennis();
+
+  game.p2.paddle.size(2, 10);
+  game.p1.paddle.size(2, 4);
+  Crafty.e('Wall')
+  	.place(0, 12).size(3, 10);
+  Crafty.e('Wall')
+  	.place(0, Game.dimensions.height-18).size(3, 10);
 });
 
 /** SQUASH **/
